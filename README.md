@@ -1,16 +1,37 @@
-# Token Manager
+# Cardinal NFT Token Manager — Revived
 
 <p align="center">
-    An open protocol for issuing managed tokens on Solana.
+    An open protocol for issuing managed tokens on Solana.<br/>
+    <em>Originally by <a href="https://github.com/solana-nft-programs">solana-nft-programs</a> (Cardinal Labs). Revived for the <a href="https://www.solanagraveyard.com/">Solana Graveyard Hackathon</a>.</em>
 </p>
+
+## Revival Status
+
+Cardinal Labs shut down in 2023 after the FTX collapse. This fork revives all 5 on-chain programs, fixes build compatibility with modern Solana tooling, and adds a test suite proving the core token management lifecycle still works.
+
+**What was fixed:**
+- Anchor 0.28 programs building with Anchor CLI 0.32 (`--no-idl` flag)
+- BPF toolchain dependency conflicts (blake3, indexmap, spl-token-2022, solana-program v2 chain)
+- `solana_program` import paths updated to `anchor_lang::solana_program`
+- mpl-token-metadata v3.2.3 API changes (`update_authority` tuple)
+- Cargo.lock v3 compatibility for BPF cargo 1.75
+- New program keypairs generated (original mainnet keys not available)
+
+**Test results: 4/4 passing** — init, add invalidator, issue token, re-init rejection.
 
 ## Background
 
-The Token Manager program is a wrapper protocol that achieves conditional ownership of Solana NFTs. It allows one to issue an NFT to another party with embedded mechanisms for programmatic management of the token while it sits in their wallet. Among others, things like time-based expiration, usage-based expiration, selective transferability, and non-transferability are possible with the Token Manager. Its modular design uses “plugin” invalidators, approval authorities, and transfer authorities modeled as separate smart contracts to allow for theoretically any custom invalidation, claiming, and transfer logic tied to on-chain data. We currently offer two out-of-the-box invalidator plugins to support basic time and usage-based expiration as well as a basic payment-based claim approver.
+The Token Manager program is a wrapper protocol that achieves conditional ownership of Solana NFTs. It allows one to issue an NFT to another party with embedded mechanisms for programmatic management of the token while it sits in their wallet. Among others, things like time-based expiration, usage-based expiration, selective transferability, and non-transferability are possible with the Token Manager. Its modular design uses "plugin" invalidators, approval authorities, and transfer authorities modeled as separate smart contracts to allow for theoretically any custom invalidation, claiming, and transfer logic tied to on-chain data. We currently offer two out-of-the-box invalidator plugins to support basic time and usage-based expiration as well as a basic payment-based claim approver.
 
-## Addresses
+## Addresses (Revival — Localnet/Devnet)
 
-Program addresses are the same on devnet, testnet, and mainnet-beta.
+- TokenManager: `9rRm9jSDyPhqkmpcn8oFBfrR46jQwRPacRknj1i9Pge6`
+- PaidClaimApprover: `BcpUG33Z6S3sDbT1YGXmYgE8D2VQ1i2x8yZMzA3yXtFx`
+- TimeInvalidator: `7hAFqUxwnJtwEiMX39HaVQ8brLguVVf359Q45oWcqfK6`
+- UseInvalidator: `6bmp1HxmVbEJipcFLkHvkwezRZBowUzB21FwcACkkfdd`
+- TransferAuthority: `Hu7p8c6X5YBUHMezw5ANBVhLD1P86ELioKNbXLNhSsTT`
+
+### Original Mainnet Addresses (Historical)
 
 - TokenManager: [`mgr99QFMYByTqGPWmNqunV7vBLmWWXdSrHUfV8Jf3JM`](https://explorer.solana.com/address/mgr99QFMYByTqGPWmNqunV7vBLmWWXdSrHUfV8Jf3JM)
 - PaidClaimApprover: [`pcaBwhJ1YHp7UDA7HASpQsRUmUNwzgYaLQto2kSj1fR`](https://explorer.solana.com/address/pcaBwhJ1YHp7UDA7HASpQsRUmUNwzgYaLQto2kSj1fR)
@@ -264,8 +285,53 @@ try {
 
 ---
 
-<p>&nbsp;</p>
+## Build & Test
 
----
+### Prerequisites
 
-<p>&nbsp;</p>
+- Rust 1.75+ (for BPF toolchain)
+- Solana CLI 1.18.x
+- Anchor CLI 0.32.x
+- Node.js 18+
+
+### Build all 5 programs
+
+```bash
+anchor build --no-idl
+```
+
+> Note: `--no-idl` is required because the programs use Anchor 0.28 which predates the `idl-build` feature required by Anchor CLI 0.32.
+
+### Run tests
+
+```bash
+# Start validator with all 5 programs
+solana-test-validator \
+  --bpf-program 9rRm9jSDyPhqkmpcn8oFBfrR46jQwRPacRknj1i9Pge6 target/deploy/solana_nft_programs_token_manager.so \
+  --bpf-program BcpUG33Z6S3sDbT1YGXmYgE8D2VQ1i2x8yZMzA3yXtFx target/deploy/solana_nft_programs_paid_claim_approver.so \
+  --bpf-program 7hAFqUxwnJtwEiMX39HaVQ8brLguVVf359Q45oWcqfK6 target/deploy/solana_nft_programs_time_invalidator.so \
+  --bpf-program 6bmp1HxmVbEJipcFLkHvkwezRZBowUzB21FwcACkkfdd target/deploy/solana_nft_programs_use_invalidator.so \
+  --bpf-program Hu7p8c6X5YBUHMezw5ANBVhLD1P86ELioKNbXLNhSsTT target/deploy/solana_nft_programs_transfer_authority.so \
+  --reset --quiet &
+
+# Fund test wallet and run tests
+solana airdrop 10 $(solana-keygen pubkey tests/test-key.json) -u localhost
+npm install
+npx mocha tests/cardinal.test.js --timeout 60000
+```
+
+## Architecture
+
+Five programs working together:
+
+| Program | Purpose |
+|---------|---------|
+| **Token Manager** | Core — wraps NFTs with conditional ownership rules |
+| **Paid Claim Approver** | Plugin — enforces payment before claiming |
+| **Time Invalidator** | Plugin — expires tokens after a duration |
+| **Use Invalidator** | Plugin — expires tokens after N uses |
+| **Transfer Authority** | Plugin — controls who can transfer wrapped tokens |
+
+## License
+
+AGPL-3.0 (inherited from upstream)
