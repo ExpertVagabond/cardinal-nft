@@ -11,8 +11,8 @@ use mpl_token_metadata::instructions::CreateMetadataAccountV3;
 use mpl_token_metadata::instructions::CreateMetadataAccountV3InstructionArgs;
 use mpl_token_metadata::types::Creator;
 use mpl_token_metadata::types::DataV2;
-use solana_program::program_pack::Pack;
-use solana_program::system_instruction::create_account;
+use anchor_lang::solana_program::program_pack::Pack;
+use anchor_lang::solana_program::system_instruction::create_account;
 
 #[derive(Accounts)]
 pub struct ClaimReceiptMintCtx<'info> {
@@ -92,7 +92,7 @@ pub fn handler(ctx: Context<ClaimReceiptMintCtx>, name: String) -> Result<()> {
             mint: ctx.accounts.receipt_mint.key(),
             mint_authority: ctx.accounts.receipt_mint_manager.key(),
             payer: ctx.accounts.payer.key(),
-            update_authority: ctx.accounts.receipt_mint_manager.key(),
+            update_authority: (ctx.accounts.receipt_mint_manager.key(), true),
             system_program: ctx.accounts.system_program.key(),
             rent: Some(ctx.accounts.rent.key()),
         }

@@ -5,7 +5,7 @@ pub mod state;
 use anchor_lang::prelude::*;
 use instructions::*;
 
-declare_id!("trsMRg3GzFSNgC3tdhbuKUES8YvGtUBbzp5fjxLtVQW");
+declare_id!("Hu7p8c6X5YBUHMezw5ANBVhLD1P86ELioKNbXLNhSsTT");
 
 #[program]
 pub mod solana_nft_programs_transfer_authority {

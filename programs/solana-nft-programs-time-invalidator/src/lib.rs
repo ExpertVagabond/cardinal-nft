@@ -5,7 +5,7 @@ pub mod state;
 use anchor_lang::prelude::*;
 use instructions::*;
 
-declare_id!("tmeEDp1RgoDtZFtx6qod3HkbQmv9LMe36uqKVvsLTDE");
+declare_id!("7hAFqUxwnJtwEiMX39HaVQ8brLguVVf359Q45oWcqfK6");
 
 #[program]
 pub mod solana_nft_programs_time_invalidator {

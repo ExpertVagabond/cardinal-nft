@@ -10,7 +10,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::Token;
 use solana_nft_programs_payment_manager::program::SolanaNftProgramsPaymentManager;
 
-use solana_program::sysvar::{self};
+use anchor_lang::solana_program::sysvar::{self};
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct AcceptListingIx {

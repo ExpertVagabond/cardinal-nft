@@ -8,8 +8,8 @@ use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;
 use anchor_spl::token::Transfer;
 use anchor_spl::token::{self};
-use solana_program::program::invoke;
-use solana_program::system_instruction;
+use anchor_lang::solana_program::program::invoke;
+use anchor_lang::solana_program::system_instruction;
 
 #[derive(Accounts)]
 pub struct IssueCtx<'info> {

@@ -5,7 +5,7 @@ pub mod state;
 use anchor_lang::prelude::*;
 use instructions::*;
 
-declare_id!("pcaBwhJ1YHp7UDA7HASpQsRUmUNwzgYaLQto2kSj1fR");
+declare_id!("BcpUG33Z6S3sDbT1YGXmYgE8D2VQ1i2x8yZMzA3yXtFx");
 
 #[program]
 pub mod solana_nft_programs_paid_claim_approver {
