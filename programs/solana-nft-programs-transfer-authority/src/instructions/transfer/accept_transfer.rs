@@ -12,9 +12,9 @@ use solana_nft_programs_token_manager::program::SolanaNftProgramsTokenManager;
 use solana_nft_programs_token_manager::state::TokenManager;
 use solana_nft_programs_token_manager::state::TokenManagerState;
 
-use solana_program::sysvar::instructions::get_instruction_relative;
-use solana_program::sysvar::instructions::load_current_index_checked;
-use solana_program::sysvar::{self};
+use anchor_lang::solana_program::sysvar::instructions::get_instruction_relative;
+use anchor_lang::solana_program::sysvar::instructions::load_current_index_checked;
+use anchor_lang::solana_program::sysvar::{self};
 use spl_associated_token_account::get_associated_token_address;
 
 #[derive(Accounts)]

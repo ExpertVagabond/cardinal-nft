@@ -6,7 +6,7 @@ pub mod utils;
 use anchor_lang::prelude::*;
 use instructions::*;
 
-declare_id!("mgr99QFMYByTqGPWmNqunV7vBLmWWXdSrHUfV8Jf3JM");
+declare_id!("9rRm9jSDyPhqkmpcn8oFBfrR46jQwRPacRknj1i9Pge6");
 
 #[program]
 pub mod solana_nft_programs_token_manager {
