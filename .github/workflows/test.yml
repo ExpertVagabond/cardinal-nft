@@ -129,7 +129,7 @@ jobs:
         with:
           name: Integration Tests
           path: tests/out.xml
-      - uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@v2
         if: always()
         with:
           name: Integration Tests Results
