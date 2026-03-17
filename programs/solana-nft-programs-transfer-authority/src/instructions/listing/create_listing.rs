@@ -7,8 +7,8 @@ use anchor_lang::prelude::*;
 use solana_nft_programs_token_manager::state::TokenManager;
 use solana_nft_programs_token_manager::state::TokenManagerState;
 
-use solana_nft_programs_token_manager::program::SolanaNftProgramsTokenManager;
 use anchor_lang::solana_program::sysvar::{self};
+use solana_nft_programs_token_manager::program::SolanaNftProgramsTokenManager;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct CreateListingIx {
