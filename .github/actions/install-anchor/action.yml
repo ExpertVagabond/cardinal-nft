@@ -11,7 +11,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/cache@v2
+    - uses: actions/cache@v4
       name: Cache Cargo registry + index
       id: cache-anchor
       with:
@@ -25,7 +25,7 @@ runs:
       if: steps.cache-anchor.outputs.cache-hit != 'true'
       run: cargo install --git ${{inputs.anchor_git}} --tag v${{inputs.anchor_version}} anchor-cli --locked --force
       shell: bash
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: anchor-binary
         path: ~/.cargo/bin/anchor
