@@ -10,7 +10,7 @@ runs:
   steps:
     - name: Cache Soteria Install
       id: cache-soteria-install
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: "PATH=$PWD/soteria-linux-develop/bin/soteria"
         key: ${{ runner.os }}-soteria-v${{ inputs.soteria-version  }}
@@ -22,7 +22,7 @@ runs:
         export PATH=$PWD/soteria-linux-develop/bin/:$PATH
         echo "$PWD/soteria-linux-develop/bin" >> $GITHUB_PATH
       shell: bash
-    # - uses: actions/upload-artifact@v2
+    # - uses: actions/upload-artifact@v4
     #   with:
     #     name: soteria-binary
     #     path: $PWD/soteria-linux-develop/bin/soteria
