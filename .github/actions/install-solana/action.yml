@@ -16,9 +16,18 @@ runs:
         key: ${{ runner.os }}-Solana-v${{ inputs.solana_version  }}
 
     - name: Install Solana
-      # if: steps.cache-solana-install.outputs.cache-hit != 'true'
+      # release.solana.com no longer serves the pre-Anza installers reliably
+      # (SSL_ERROR_SYSCALL from GitHub runners), so fetch the release tarball
+      # straight from GitHub Releases and lay it out where the installer would.
+      if: steps.cache-solana-install.outputs.cache-hit != 'true'
       run: |
-        sh -c "$(curl -sSfL https://release.solana.com/v${{ inputs.solana_version }}/install)"
+        RELEASE_DIR="$HOME/.local/share/solana/install/releases/${{ inputs.solana_version }}"
+        mkdir -p "$RELEASE_DIR"
+        curl -sSfL --retry 3 \
+          "https://github.com/solana-labs/solana/releases/download/v${{ inputs.solana_version }}/solana-release-x86_64-unknown-linux-gnu.tar.bz2" \
+          -o /tmp/solana-release.tar.bz2
+        tar -xjf /tmp/solana-release.tar.bz2 -C "$RELEASE_DIR"
+        test -x "$RELEASE_DIR/solana-release/bin/solana"
       shell: bash
 
     - name: Set Active Solana Version

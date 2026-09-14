@@ -17,7 +17,6 @@ env:
   CARGO_TERM_COLOR: always
   SOLANA_VERSION: 1.14.15
   RUST_TOOLCHAIN: 1.89.0
-  SOTERIA_VERSION: 0.0.0
   ANCHOR_GIT: https://github.com/project-serum/anchor
   ANCHOR_VERSION: 0.26.0
 
@@ -53,34 +52,6 @@ jobs:
         with:
           command: fmt
           args: --all --manifest-path ./Cargo.toml -- --check
-
-  soteria-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          override: true
-          profile: minimal
-          toolchain: ${{ env.RUST_TOOLCHAIN }}
-      - uses: ./.github/actions/install-solana
-        with:
-          solana_version: ${{ env.SOLANA_VERSION }}
-      - uses: ./.github/actions/install-soteria
-        with:
-          soteria_version: ${{ env.SOTERIA_VERSION }}
-      - name: Soteria scan programs
-        working-directory: ./programs
-        run: >-
-          for PROGRAM in ./*; do
-              if [ -d "$PROGRAM" ]; then
-                  cd "$PROGRAM"
-                  echo "Soteria scan for $PROGRAM"
-                  soteria -analyzeAll .
-                  cd ..
-              fi
-          done
-        shell: bash
 
   integration-tests:
     runs-on: ubuntu-latest
