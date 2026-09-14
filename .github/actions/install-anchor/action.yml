@@ -22,8 +22,13 @@ runs:
           ~/.cargo/git/db/
         key: cargo-${{ runner.os }}-anchor-${{ hashFiles('**/Cargo.lock') }}
     - name: Install anchor
+      # anchor-cli 0.26.0's Cargo.lock pins a wasm-bindgen that rustc >= 1.82
+      # refuses to compile, so build the CLI with a toolchain from its era.
+      # Only this install uses it; clippy/fmt and anchor build keep RUST_TOOLCHAIN.
       if: steps.cache-anchor.outputs.cache-hit != 'true'
-      run: cargo install --git ${{inputs.anchor_git}} --tag v${{inputs.anchor_version}} anchor-cli --locked --force
+      run: |
+        rustup toolchain install 1.75.0 --profile minimal
+        cargo +1.75.0 install --git ${{inputs.anchor_git}} --tag v${{inputs.anchor_version}} anchor-cli --locked --force
       shell: bash
     - uses: actions/upload-artifact@v4
       with:
