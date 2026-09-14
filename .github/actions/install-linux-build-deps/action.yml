@@ -13,7 +13,17 @@ runs:
       run: |
         sudo apt-get install -y openssl --allow-unauthenticated
         sudo apt-get install -y libssl-dev --allow-unauthenticated
-        sudo apt-get install -y libssl1.1 --allow-unauthenticated
+      shell: bash
+
+    - name: install libssl1.1 (Solana 1.14 binaries link against it; gone from Ubuntu 22.04+)
+      run: |
+        if ! dpkg -s libssl1.1 >/dev/null 2>&1; then
+          DEB=$(curl -sSf http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/ \
+            | grep -o 'libssl1\.1_1\.1\.1f-1ubuntu2\.[0-9]*_amd64\.deb' | sort -V | tail -1)
+          test -n "$DEB"
+          curl -sSfL --retry 3 "http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/$DEB" -o /tmp/libssl1.1.deb
+          sudo dpkg -i /tmp/libssl1.1.deb
+        fi
       shell: bash
 
     - name: apt-get install dev tools
